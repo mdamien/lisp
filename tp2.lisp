@@ -2,23 +2,28 @@
 (setq R-ops '((0 1) (1 0) (1 1) (2 0) (0 2)) )       ; <-
 (setq L-ops '((0 -1) (-1 0) (-1 -1) (-2 0) (0 -2)) ) ; ->
 
+
+(defun list-contains (x L)
+	(if (or (eq x nil) (eq L nil)) 'F (if (equal (car L) x) 'T (list-contains x (cdr L))))
+)
+
 (defun apply-op (state op)
-	(cons (+ (car state) (car op)) (cons (+ (cadr state) (cadr op)) (if (eq (caddr state) 'R) 'L 'R)))
+	(list (+ (car state) (car op)) (+ (cadr state) (cadr op)) (if (eq (caddr state) 'R) 'L 'R))
 )
 
 ;parcours en profondeur
 (defun solve (state previous-states)
-	(print state)
 	(cond
 		((equal state '(0 0 R))
-			(print (cons state previous-states)))
+			(print previous-states))
 		((or (< (car state) 0) (< (cadr state) 0) nil))
 		((or (> (car state) 3) (> (cadr state) 3) nil))
 		( T (dolist (op (if (eq (caddr state) 'R) R-ops L-ops))
-			(unless (find (apply-op state op) previous-states)
+			(if (eq (list-contains (apply-op state op) previous-states) 'F)
 				(solve (apply-op state op) (cons (apply-op state op) previous-states))
 			)
 		))
 	)
 )
+(print (list-contains '(1 3) '( (1 2) (3 4))))
 (print (solve '(3 3 L) '()))
