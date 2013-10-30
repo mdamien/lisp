@@ -13,15 +13,13 @@
 
 ;parcours en profondeur
 (defun solve (state previous-states)
-	;(print state)
-	;(print previous-states)
 	(cond
 		((equal state '(0 0 0))
 			(print previous-states))
 		;invalide les états invalides
 		((or (< (car state) 0) (< (cadr state) 0) nil))
 		((or (> (car state) 3) (> (cadr state) 3) nil))
-		;TODO: verifier nb de sauvages supérieurs aux missionaires sur l'autre rive
+		;verifie nb de sauvages supérieurs aux missionaires sur l'autre rive
 		(
 			(or (and (eq (caddr state) 1) (> (cadr state) (car state)))
 			(and (eq (caddr state) 0) (< (cadr state) (car state)))
