@@ -18,8 +18,9 @@
 			(print previous-states))
 		((or (< (car state) 0) (< (cadr state) 0) nil))
 		((or (> (car state) 3) (> (cadr state) 3) nil))
+		;TODO: verifier nb de sauvages supérieurs aux missionaires
 		( T (dolist (op (if (eq (caddr state) 'R) R-ops L-ops))
-			(if (eq (list-contains (apply-op state op) previous-states) 'F)
+			(if (eq (list-contains (apply-op state op) previous-states) 'F) ; TODO: verifier "pendant qu'ils prennent le bateau"
 				(solve (apply-op state op) (cons (apply-op state op) previous-states))
 			)
 		))
