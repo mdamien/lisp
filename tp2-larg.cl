@@ -12,7 +12,10 @@
 )
 
 (defun enqueue (x Q)
-	(nconc Q (list x))	
+	(if (null Q)
+		(list x)
+		(nconc Q (list x))
+	)
 )
 
 (defun dequeue (Q)
@@ -27,28 +30,49 @@
 	;ensuite on reapplique le meme principe.
 
 (defun solve-larg (state)
-	(let ((Q '()))
-		(cond
-			((or (< (car state) 0) (< (cadr state) 0) nil))
-			((or (> (car state) 3) (> (cadr state) 3) nil))
-			;verifie nb de sauvages supérieurs aux missionaires sur l'autre rive
-			(
-				(or (and (eq (caddr state) 1) (> (cadr state) (car state)))
-				(and (eq (caddr state) 0) (< (cadr state) (car state)))
+	(let ((Q (enqueue (list state '()) '())))
+		(print Q)
+		(dolist (node Q)
+			(setq Q (dequeue Q))
+			(print Q)
+			(cond 
+				((eq (car node) '(0 0 0)) (print (nconc (cdr node) '(0 0 0))))  
+				((verify (car node)) 
+					(let ((res '()))
+						(dolist (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
+							(print "node is")
+							(print node)
+							(print (cdr node))
+							(if (not (in (setq res (apply-op state op)) (cdr node)))
+								(if (eq (cadr node) NIL)	
+									(setq Q (enqueue (list res (list (car node))) Q))
+									(setq Q (enqueue (list res (list (cdr node) (car node))) Q))
+								)
+							)	
+							(print "Q is")
+							(print Q)
+						)
+					)
 				)
-				nil
-			)
-			;appliquer toutes les transformations possibles
-			(T (dolist (op (if (eq (caddr state) 0) *R-ops* *L-ops*))
-					(setq Q (enqueue (apply-op state op) Q))
-					(print Q)
-				)
-				(print Q)
-				(mapcar #'solve-larg Q)
 			)
 		)
-	)
+	)	
 )	
+
+(defun verify (state)
+	(cond
+		((or (< (car state) 0) (< (cadr state) 0) nil))
+		((or (> (car state) 3) (> (cadr state) 3) nil))
+		;verifie nb de sauvages supérieurs aux missionaires sur l'autre rive
+		(
+			(or (and (eq (caddr state) 1) (> (cadr state) (car state)))
+			(and (eq (caddr state) 0) (< (cadr state) (car state)))
+			)
+			nil
+		)
+		(T T)
+	)	
+)
 
 (defun solve-larg (state previous-states)
 	(cond
