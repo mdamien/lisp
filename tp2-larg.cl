@@ -12,7 +12,7 @@
 )
 
 (defun enqueue (x Q)
-	(nconc Q (list x))
+	(nconc Q (list x))	
 )
 
 (defun dequeue (Q)
@@ -26,8 +26,8 @@
 	;on enfile les etats apres verification
 	;ensuite on reapplique le meme principe.
 
-(defun verify (state Q)
-	(let ((Q NIL))
+(defun solve-larg (state)
+	(let ((Q '()))
 		(cond
 			((or (< (car state) 0) (< (cadr state) 0) nil))
 			((or (> (car state) 3) (> (cadr state) 3) nil))
@@ -39,18 +39,16 @@
 				nil
 			)
 			;appliquer toutes les transformations possibles
-			(T (dolist (op (if (eq (caddr state) 0) R-ops L-ops))
-				(enqueue (apply-op state op) Q)
-			))
+			(T (dolist (op (if (eq (caddr state) 0) *R-ops* *L-ops*))
+					(setq Q (enqueue (apply-op state op) Q))
+					(print Q)
+				)
+				(print Q)
+				(mapcar #'solve-larg Q)
+			)
 		)
 	)
 )	
-
-(defun solve-larg (state)
-	(let ((Q NIL))
-		
-	)
-)
 
 (defun solve-larg (state previous-states)
 	(cond
