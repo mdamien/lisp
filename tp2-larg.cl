@@ -29,12 +29,10 @@
 	;on enfile les etats apres verification
 	;ensuite on reapplique le meme principe.
 
-(defun solve-larg (state)
-	(let ((Q (enqueue (list state '()) '())))
+(defun solve-larg (Q i)
 		(print Q)
 		(dolist (node Q)
 			(setq Q (dequeue Q))
-			(print Q)
 			(cond 
 				((eq (car node) '(0 0 0)) (print (nconc (cdr node) '(0 0 0))))  
 				((verify (car node)) 
@@ -42,8 +40,7 @@
 						(dolist (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
 							(print "node is")
 							(print node)
-							(print (cdr node))
-							(if (not (in (setq res (apply-op state op)) (cdr node)))
+							(if (not (in (setq res (apply-op (car node) op)) (cdr node)))
 								(if (eq (cadr node) NIL)	
 									(setq Q (enqueue (list res (list (car node))) Q))
 									(setq Q (enqueue (list res (list (cdr node) (car node))) Q))
@@ -56,8 +53,14 @@
 				)
 			)
 		)
-	)	
+		(if (not (eq i 1)) (solve-larg Q 1) "END")	
 )	
+
+(defun init-solve (state)
+	(let ((Q (enqueue (list state '()) '())))
+		(solve-larg Q 0)
+	)	
+)
 
 (defun verify (state)
 	(cond
