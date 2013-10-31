@@ -32,6 +32,8 @@
 (defun solve-larg (Q i)
 		(print Q)
 		(dolist (node Q)
+			(print "car de Q is")
+			(print (car Q))
 			(setq Q (dequeue Q))
 			(cond 
 				((eq (car node) '(0 0 0)) (print (nconc (cdr node) '(0 0 0))))  
@@ -40,10 +42,13 @@
 						(dolist (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
 							(print "node is")
 							(print node)
-							(if (not (in (setq res (apply-op (car node) op)) (cdr node)))
+							(setq res (apply-op (car node) op))
+							(print "Res is")
+							(print res)
+							(if (and (not (in res (cadr node))) (verify res))
 								(if (eq (cadr node) NIL)	
 									(setq Q (enqueue (list res (list (car node))) Q))
-									(setq Q (enqueue (list res (list (cdr node) (car node))) Q))
+									(setq Q (enqueue (list res (append (cadr node) (list (car node)))) Q))
 								)
 							)	
 							(print "Q is")
@@ -64,12 +69,13 @@
 
 (defun verify (state)
 	(cond
-		((or (< (car state) 0) (< (cadr state) 0) nil))
-		((or (> (car state) 3) (> (cadr state) 3) nil))
+		((or (< (car state) 0) (< (cadr state) 0)) nil)
+		((or (> (car state) 3) (> (cadr state) 3)) nil)
 		;verifie nb de sauvages supérieurs aux missionaires sur l'autre rive
 		(
-			(or (and (eq (caddr state) 1) (> (cadr state) (car state)))
-			(and (eq (caddr state) 0) (< (cadr state) (car state)))
+			(and 
+				(and (not (= (car state) 3)) (not (= (car state) 0)))
+				(not (= (car state) (cadr state)))
 			)
 			nil
 		)
@@ -77,7 +83,7 @@
 	)	
 )
 
-(defun solve-larg (state previous-states)
+(defun solve (state previous-states)
 	(cond
 		((equal state '(0 0 0))
 			(print previous-states))
