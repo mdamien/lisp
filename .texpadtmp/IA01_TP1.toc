@@ -1,0 +1,19 @@
+\select@language {french}
+\contentsline {chapter}{\numberline {1}Les cannibales et les missionaires}{3}
+\contentsline {section}{\numberline {1.1}Question n\IeC {\degres }1}{3}
+\contentsline {section}{\numberline {1.2}Question n\IeC {\degres }2}{3}
+\contentsline {section}{\numberline {1.3}Retourner la concat\IeC {\'e}nation de deux listes}{4}
+\contentsline {section}{\numberline {1.4}Intersection de deux listes}{5}
+\contentsline {section}{\numberline {1.5}Inclusion de deux listes}{5}
+\contentsline {chapter}{\numberline {2}\'Exercice 2}{8}
+\contentsline {chapter}{\numberline {3}\'Exercice 3}{9}
+\contentsline {section}{\numberline {3.1}Algorithmique}{9}
+\contentsline {section}{\numberline {3.2}Code source}{9}
+\contentsline {chapter}{\numberline {4}\'Exercice 4}{10}
+\contentsline {section}{\numberline {4.1}Petites fonctions pour commencer}{10}
+\contentsline {section}{\numberline {4.2}Personnes contenues dans la base de donn\IeC {\'e}es.}{11}
+\contentsline {section}{\numberline {4.3}Les personnes qui s'appellent Pierrot.}{11}
+\contentsline {section}{\numberline {4.4}Les personnes avec le nom donn\IeC {\'e} en argument.}{12}
+\contentsline {section}{\numberline {4.5}Les personnes avec X ann\IeC {\'e}es.}{12}
+\contentsline {section}{\numberline {4.6}Les personnes ayant moins de X livres.}{13}
+\contentsline {section}{\numberline {4.7}Moyenne des ages de la famille X.}{13}

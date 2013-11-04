@@ -34,7 +34,7 @@
 \newcommand{\bigO}[1]{\ensuremath{\mathop{}\mathopen{}O\mathopen{}\left(#1\right)}}
 \newcommand{\smallO}[1]{\ensuremath{\mathop{}\mathopen{}o\mathopen{}\left(#1\right)}}
 
-\title{\textsc{\textbf{Rapport TP IA01}}}
+\title{\textsc{\textbf{Rapport TP n°2 IA01}}}
 \author{\textbf{Damien MARI\'E et Antoine POUILLAUDE}}
 
 \begin{document}
@@ -42,41 +42,44 @@
     \tableofcontents
 \newpage
 \section*{Remarques générales}
-Le langage Lisp est beaucoup plus adapté à des formes récursives plutôt qu'itérative de par la syntaxe du langage et de son approche fonctionnelle.
-Ainsi, la forme itérative s’est presque toujours fait après la forme récursive.
-De plus les fonctions trop triviales (ni récursives ni itératives) n’ont pas eu deux versions.
 
-Les algorithmes utilisés sont souvent mis en évidence en langage courant dans les commentaires précédent le code.
+      								
+    \chapter{Les cannibales et les missionaires}		
+        \section{Question n°1}        
+            Suivons le formalisme donné dans l'ennoncé. Un état est ainsi représenté : (État rive gauche, État rive droite) sachant qu'un état d'une rive est donné par (nombre de Missionnaire, nombre de Cannibale, 1 si le bâteau est amarré à la rive 0 sinon). Ainsi nous obtenons l'ensemble des états : 
+            \[ \text{Ensemble d'état} = 
+            \{ ((3\ 3\ 1) (0\ 0\ 0)),
+            ((2\ 2\ 0) (1\ 1\ 1)),
+            ((3\ 2\ 1) (0\ 1\ 0)),
+            ((0\ 1\ 0) (3\ 2\ 1)),
+            ...
+            \}\]
+            
+    Cela dit on remarque très vite que la notation est lourde et futile puisque dans tous les cas on doit avoir : 
+\[
+          \left\{
+    \begin{array}{ll}
+        \sum_{\{Rive gauche,Rive droite\}}^{}Cannibale =3\\
+        et\\
+        \sum_{\{Rive gauche,Rive droite\}}^{}Missionaire = 3
+    \end{array}
+\right.
+\forall \text{ etat } \in \text{Ensemble d'état}
+\]
+Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'état d'une on peut alors connaitre l'état de l'autre rive par déduction. Par conséquent, nous simplifierons en affichant l'état que d'un seul côté. Ainsi on aura l'ensemble des états suivant :
+\[ \text{Ensemble d'état} = 
+            \{ (3\ 3\ 1),
+            (2\ 2\ 0),
+            (3\ 2\ 1),
+            (3\ 2\ 0),
+            (0\ 1\ 0),
+            (2\ 3\ 1),
+            (2\ 3\ 0),
+            (1\ 1\ 1),
+            ...
+            \}\]
 
-La notation first / rest est ici préférée à car / cdr.       								
-    \chapter{\'Exercice 1}		
-        \section{Rang d'un élément dans une liste}        
-            \begin{lstlisting}[label=some-code,caption=F1 (X L) version recursive,language=lisp]
-                (defun F1rec (X L &optional (c 0))
-                  (if (null L) nil)
-                    (if (eql (first L) X) c
-                        (F1 (rest L) (+ c 1))
-                    )
-                  )
-                )
-            \end{lstlisting}
-          
-            \begin{lstlisting}[label=some-code,caption=F1 (X L) version itérative,language=lisp]
-                (defun F1iter (X L)
-	              (let ((c 0))
-		            (dolist (y L c)
-			          (if (eq y x) 
-				        (+ c 1)
-			          )
-		            )
-	              )
-                )
-            \end{lstlisting}
-    F1iter et F1rec retournent le rang d'un élément X dans une liste L ou nil si X n’est pas présent. Attention, cependant, après test la fonction F1iter ne retourne pas ce que l'on souhaite.
-
-\newpage
-          
-		\section{Retourner les N premiers éléments}     
+		\section{Question n°2}     
             
             \begin{lstlisting}[label=some-code,caption=F2 (N L) version recursive,language=lisp]
                 (defun F2rec (N L)
