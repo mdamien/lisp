@@ -48,5 +48,5 @@ def print_tree(state,level=0):
 	for state in state.childs:
 		print_tree(state,level+1)
 
-print State(0,0,0,1) == State(0,0,0)
-print_tree(generate())
+if __name__ == "__main__":
+	print_tree(generate())
