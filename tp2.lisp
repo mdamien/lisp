@@ -21,13 +21,13 @@
                 ((or (> (car state) 3) (> (cadr state) 3)) nil)
                 ;verifie nb de sauvages supérieurs aux missionaires sur l'autre rive
                 (
-                        (or (and (eq (caddr state) 1) (> (cadr state) (car state)))
-                        (and (eq (caddr state) 0) (< (cadr state) (car state)))
+                        (or (and (= (caddr state) 1) (> (cadr state) (car state)))
+                        (and (= (caddr state) 0) (< (cadr state) (car state)))
                         )
                         nil
                 )
                 ;appliquer toutes les transformations possibles
-                ( T (dolist (op (if (eq (caddr state) 0) R-ops L-ops))
+                ( T (dolist (op (if (= (caddr state) 0) R-ops L-ops))
                         ;verifier que l'on ne retourne pas dans un état déjà 
                         (if (eq (list-contains (apply-op state op) previous-states) 'F)
                                 (solve (apply-op state op) (cons (apply-op state op) previous-states))

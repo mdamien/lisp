@@ -33,9 +33,8 @@
 	(dolist (node Q)
 		(setq Q (dequeue Q))
 		(cond 
-			((equal (car node) '(0 0 0)) (print "One of the solution is ") (print (append (cadr node) (list '(0 0 0)))))  
+			((equal (car node) '(0 0 0)) (print "Solution:") (print (append (cadr node) (list '(0 0 0)))))  
 			((verify (car node)) 
-				(let ((res '()))
 					(dolist (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
 						(setq res (apply-op (car node) op))
 						(if (and (not (in res (cadr node))) (verify res))
@@ -45,7 +44,6 @@
 							)
 						)	
 					)
-				)
 			)
 		)
 	)
@@ -56,6 +54,33 @@
 	(let ((Q (enqueue (list state '()) '())))
 		(solve-larg Q)
 	)	
+)
+
+;parcours en profondeur
+(defun solve (state previous-states)
+    (print "SSSSSS")
+    (print state)
+    (print previous-states)
+    (print "---")
+	(cond
+		((equal state '(0 0 0))
+			(print "Solution:") (print (nconc previous-states (list '(0 0 0)))))
+		((not (verify state)) nil)
+		;appliquer toutes les transformations possibles
+		(T
+            (dolist (op (if (eq (caddr state) 0) *R-ops* *L-ops*))
+                (setq res (apply-op state op))
+                ;verifier que l'on ne retourne pas dans un état déjà 
+                (if (and (not (in res previous-states)) (verify res))(progn
+                    (print res)
+                    (if (null previous-states)
+                        (solve res (list state))
+                        (solve res (nconc previous-states (list state)))
+                    ))
+                )
+            )
+		)
+	)
 )
 
 (defun verify (state)
@@ -71,8 +96,13 @@
 			nil
 		)
 		(T T)
-	)	
+	)
 )
 
 ;pour test
-(init-solve '(3 3 1))
+(print "Parcours en largeur") 
+;(init-solve '(3 3 1))
+(print "") 
+(print "Parcours en profondeur") 
+;(solve '(3 3 1) '())
+(solve '(3 2 1) '((3 3 1) (2 2 0)))
