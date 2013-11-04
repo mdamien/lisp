@@ -21,218 +21,437 @@
 \theoremstyle{plain}
 \usepackage{blkarray}
 \usepackage{listings}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{black}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
 
 
 \newcommand{\bigO}[1]{\ensuremath{\mathop{}\mathopen{}O\mathopen{}\left(#1\right)}}
 \newcommand{\smallO}[1]{\ensuremath{\mathop{}\mathopen{}o\mathopen{}\left(#1\right)}}
 
-\title{\textsc{\textbf{Rapport TP NF16}}}
-\author{\textbf{Antoine LE CALVEZ et Antoine POUILLAUDE}}
+\title{\textsc{\textbf{Rapport TP IA01}}}
+\author{\textbf{Damien MARI\'E et Antoine POUILLAUDE}}
 
 \begin{document}
     \maketitle
-    \tableofcontents									
-    \chapter{\'Etude des proc\'edures}		
-        \section{Recherche dans un arbre.}        
-            \begin{verbatim}
-       int search(parbre r, int x)
-            \end{verbatim}
-            \begin{description}
-            \item[Entrée :] L'arbre dans lequel on va rechercher et la valeur à rechercher.
-            \item[Sortie :] 1 si l'élément à été trouvé, 0 sinon.
-            \end{description}
+    \tableofcontents
+\newpage
+\section*{Remarques générales}
+Le langage Lisp est beaucoup plus adapté à des formes récursives plutôt qu'itérative de par la syntaxe du langage et de son approche fonctionnelle.
+Ainsi, la forme itérative s’est presque toujours fait après la forme récursive.
+De plus les fonctions trop triviales (ni récursives ni itératives) n’ont pas eu deux versions.
 
+Les algorithmes utilisés sont souvent mis en évidence en langage courant dans les commentaires précédent le code.
 
-        La première procédure que l'on va étudier est la procédure de recherche dans un arbre binaire de rechercher (eg : Binary Search Tree). Cet algorithme est simple et utilise la propriété des ABR pour trouver l'élément recherché. On part de la racine et en fonction du résultat de la comparaison on fait un appel récursif dans le sous-arbre droit ou gauche. Au vu des propriétés de la structure ABR, on fait la recherche, au pire, sur toute la hauteur de l'arbre. Donc, la complexité de l'algorithme est en $\Omega(1)$ si l'élément recherché est à la racine et en $\bigO(log_2{}(n))$ si l'élément est une feuille de l'arbre.
-		
-		
-		\section{Insertion dans qui sera appelée à chaque fois que l'on souhaite insérer le tout première élément dans une liste.}     
+La notation first / rest est ici préférée à car / cdr.       								
+    \chapter{\'Exercice 1}		
+        \section{Rang d'un élément dans une liste}        
+            \begin{lstlisting}[label=some-code,caption=F1 (X L) version recursive,language=lisp]
+                (defun F1rec (X L &optional (c 0))
+                  (if (null L) nil)
+                    (if (eql (first L) X) c
+                        (F1 (rest L) (+ c 1))
+                    )
+                  )
+                )
+            \end{lstlisting}
+          
+            \begin{lstlisting}[label=some-code,caption=F1 (X L) version itérative,language=lisp]
+                (defun F1iter (X L)
+	              (let ((c 0))
+		            (dolist (y L c)
+			          (if (eq y x) 
+				        (+ c 1)
+			          )
+		            )
+	              )
+                )
+            \end{lstlisting}
+    F1iter et F1rec retournent le rang d'un élément X dans une liste L ou nil si X n’est pas présent. Attention, cependant, après test la fonction F1iter ne retourne pas ce que l'on souhaite.
+
+\newpage
+          
+		\section{Retourner les N premiers éléments}     
             
-            Elle va tout d'abord vérifié si la liste est bien vide et que la chaîne de caractères que l'on souhaite insérer est bien inférieur à $20$ caractères. Si ce n'est pas le cas elle renvoie $-1$. Si la liste a été prouvé comme étant vide la fonction alloue l'espace mémoire nécessaire pour un élément de la liste puis elle va assigner les valeurs correspondantes aux différents paramètres de la cellule créée.\\
+            \begin{lstlisting}[label=some-code,caption=F2 (N L) version recursive,language=lisp]
+                (defun F2rec (N L)
+                  (if (> N 0)
+                    (cons (first L) (F2 (- N 1) (rest L)) )
+                    ())
+                )
+            \end{lstlisting}
+          
+            \begin{lstlisting}[label=some-code,caption=F2 (N L) version itérative,language=lisp]
+                (defun F2Iter (N L)
+	              (if (< N (length L))
+		            (let ((out NIL))
+			          (dotimes 
+				        (x (+ N 1)
+					    out)
+					    (cons out (nth x L))
+			          )
+		            )
+		         (print "The number you chose is not correct")
+	             )
+               )
+            \end{lstlisting}        
+F2rec et F2iter retourne la tête de la liste L formée par les N premiers éléments de la liste L.
             
-            Le pointeur \verb+head+ de la liste pointera alors sur l'élément créé et il en sera de même pour le pointeur \verb+tail+. L'entier \verb+size+ sera incrémenté de $1$. Cette fonction effectue des choses constantes, elle n'effectue en effet que des affectations de valeurs, la complexité s'exprime donc en $\Theta(1)$. 
-             
             
-    		\section{Insertion au début d'une liste}
-           \begin{verbatim}
-        int insert_begining_list (List *list, char *data)
-           \end{verbatim}
-            \begin{description}
-            \item[Entrée :] Un pointeur sur une structure de liste et un pointeur sur une chaine de caractère \verb+data+.
-            \item[Sortie :] $-1$ si \verb+data+ est de longueur supérieure à $20$, $0$ en cas de succés à l'insertion.
-            \end{description}
-            
-            
-            Cette fonction est peu différente de la fonction d'insertion dans une liste vide. Elle va vérifié si la liste n'est pas vide et, si tel est le cas, va appeler la fonction d'insertion vu précédement. Puis elle va tester si la chaîne de caractère fait effectivement moins de $20$ caractères. 
-            
-            Les instructions suivantes suivent à peu de choses près le même schéma que tout à l'heure. La fonction va allouer dynamiquement l'espace mémoire pour une cellule, affecter les valeurs respectives aux différents paramètres de la cellule. Le pointeur \verb+next+ de la cellule sera initialisé avec la valeur de \verb+list->head+ alors que le pointeur \verb+previous+ sera \verb+NULL+.
-            
-            Par suite, la pointeur de tête de la liste sera affecté avec le nouvel élément créé. La queue restera, elle, inchangée.\\
-            
-            L'insertion se fait en $\Theta(1)$. En effet, les opérations effectuées par la fonction ne sont que des affectations. Il n'y a pas de parcours de la liste qui est requis. Le début de la liste est aisement accessible via le pointeur \verb+list.head+
-            
-            
-        \section{Insertion en fin de liste}
-           \begin{verbatim}
-        int insert_end_list (List *list, char *data)
-           \end{verbatim}
-            \begin{description}
-            \item[Entrée :] Un pointeur sur une structure de liste et un pointeur sur une chaine de caractère \verb+data+.
-            \item[Sortie :] $-1$ si \verb+data+ est de longueur supérieure à $20$, $0$ en cas de succés à l'insertion.
-            \end{description}
-            Nous ne nous étendrons pas plus sur cette fonction car le fonctionnement de celle-ci est similaire à la fonction d'insertion en début de liste.\\
-            
-            Là encore la fonction est en $\Theta(1)$ car ce ne sont que des opérations d'affectations qui sont effectuées par cette fonction. Cette complexité est faible grâce aux propriétés des listes doublement chainées. En effet, le dernier élément est facilement accessible par le pointeur de queue de la structure de liste. En revanche, dans le cas d'une liste simplement chainée il aurait fallu parcourir toute la liste jusqu'à la fin.
+        \section{Retourner la concaténation de deux listes}
+                    
+            \begin{lstlisting}[label=some-code,caption=F3 (L M) version recursive,language=lisp]
+                (defun F3rec (L M)
+                  (if (null L) M
+                    (F3rec (rest L) (cons (first L) M))
+                  )
+                )
+            \end{lstlisting}
+          
+            \begin{lstlisting}[label=some-code,caption=F3 (L M) version itérative,language=lisp]
+                (defun F3iter (L M)
+                  (append L M)
+                )
+            \end{lstlisting}       
+F3rec et F3iter retournent la concaténation des deux listes L et M.
+
 
         \newpage
         
-        \section{Rechercher un élément à une position donnée}
-           \label{search}
-           \begin{verbatim}
-        Element* search(List *list, int position);
-           \end{verbatim}
-            \begin{description}
-            \item[Entrée :] Un pointeur sur une structure de liste, un entier pour la position de l'élément à rechercher.
-            \item[Sortie :] Un pointeur sur l'élément recherché.
-            \end{description}        
-
-            Cette fonction est très simple. Elle va parcourir la liste en quête de l'élément recherché. Dans une boucle la fonction incrèmente un compteur en passant d'élément en élément via les pointeurs \verb+next+ des cellules, et une fois que la valeur du pointeur est égale à la position on retourne un pointeur sur l'élément sur lequel on se trouve.
-            \begin{description}
-            \item[Invariant de boucle :] Au début de chaque itération on a $1<i<\verb+position+ \leqslant \verb+list->size+$.
-            \end{description}
+        \section{Intersection de deux listes}
+            \begin{algorithm}
+            \caption{Algorithme pour l'intersection de deux listes}
+            \begin{algorithmic}
+            \If {$L = NIL$}
+                \State retourner $T$
+            \ElsIf {$L[1] \in M$}
+                     \State retourner $(L[1] F4(L / L[1]))$
+            \Else                   
+                    \State retourner $F4(L \ L[1])$
+            \EndIf        
+            \end{algorithmic}
+            \end{algorithm}
             
-            La complexité de cette procédure est dans le meilleur des cas en $\bigO{1}$, la cas où l'élément recherché est la tête de la liste. Dans le pire des cas l'élément que l'on recherche est en dernière position donc on va parcourir toute la liste et donc on sera en $\bigO{n}$. Au final, on a un complexité générale de $\Omega(1)$ et $\bigO{n}$.
+            
+            \begin{lstlisting}[label=some-code,caption=F4 (L M) version recursive,language=lisp]
+                (defun F4rec (L M)
+	              (if (NULL L) L
+		            (if (member (first L) M) 
+		              (cons (first L) (F4rec (rest L) M)) 
+                              (F4rec (rest L) M)
+		            )	
+	              )
+                ) 
+            \end{lstlisting}
+          
+            \begin{lstlisting}[label=some-code,caption=F4 (L M) version itérative,language=lisp]
+                (defun F4iter (L M)
+	              (let ((out '()))
+		            (if (< (length L) (length M))
+			          (dolist (x L out) 
+				        (if (member x M)
+					      (cons out x)
+				        ) 
+			          )
+			          (dolist (x M out)
+				        (if (member x L)
+					      (cons out x)
+				        )
+			          )
+		            )
+	              )
+                )
+            \end{lstlisting}       
+F4rec et F4iter retournent l'intersection des deux listes. Attention, cependant, après test la fonction F4iter ne retourne pas ce que l'on souhaite.
           
 
-        \section{Insertion à une certaine position}
-           \begin{verbatim}
-        int insert_after_position (List *list, char *data, int position)
-           \end{verbatim}
-            \begin{description}
-            \item[Entrée :] Un pointeur sur une structure de liste, un pointeur sur une chaine de caractère \verb+data+ et un entier pour la position.
-            \item[Sortie :] $-1$ si \verb+data+ est de longueur supérieure à $20$ et si $\verb+position+ > \verb+list->size+$ ou $\verb+position+ \leqslant 0$ , $0$ en cas de succés à l'insertion.
-            \end{description}
-            C'est ici que les choses sérieuses commencent. Cette fonction a pour but d'insérer un élément à une position précisé par l'entier \verb+position+ pris en paramètre. Comme précédement elle va faire les tests habituelles concernant la vacuité de la liste et la longueur de la chaine passée en arguement. Cependant, elle va de plus tester si la position désirée est dans la liste.
+        \section{Inclusion de deux listes}
+        La première fonction a été produite avant la réception des spécifications que Mme Abel nous a envoyé en plus. Elle vérifie simplement que tous les éléments de la première liste sont dans la seconde, et ce, indépendamment de l’ordre dans lequel les éléments sont.
+                    \begin{algorithm}
+            \caption{Algorithme pour l'inclusion de deux listes version 1}
+            \begin{algorithmic}
+            \If {$L = NIL$}
+                \State retourner $T$
+            \ElsIf {$L[1] \in M$}
+                     \State retourner $F4(L \ L[1])$
+            \Else                   
+                    \State retourner $NIL$
+            \EndIf        
+            \end{algorithmic}
+            \end{algorithm}
+        \newpage
+        \begin{lstlisting}[label=some-code,caption=F5 (N L) version recursive 1,language=lisp]
+(defun F5 (L M) 
+	(if (NULL L) T 
+		(if (member (first L) M) (F5 (rest L) M) 
+			NIL
+		)
+	)
+)
+            \end{lstlisting}
+          Cet seconde fonction tient, cette fois-ci, compte de l’ordre des éléments de la première liste. Par exemple si la liste L est définie comme L=(1 2) et M comme M=(1 3 5 2) alors la fonction retournera NIL alors qu’avec M=(1 2 5 3) elle renverra T. La composition de ces deux fonctions, en revanche, nous donne une compléxité plutôt très mauvaise puisque dans le pire des cas on a une complexité en $\bigO{card(L)*card(M)}$ c’est à dire, en simplifiant, $\bigO{n^2}$.
+          \begin{algorithm}
+            \caption{Algorithme pour l'inclusion de deux listes version 2}
+            \begin{algorithmic}
+            \If {$L = NIL$}
+                \State retourner $T$
+            \ElsIf {$M = NIL$}
+                     \State retourner $T$
+            \ElsIf {$verifF5(L,M)$}                  
+                    \State retourner $T$
+            \Else 
+                    \State retourner $NIL$        
+            \EndIf        
+            \end{algorithmic}
+            \end{algorithm}
             
-            On a pris comme convention que si $\verb+position+ = 1$ alors on insére en début de liste et si $\verb+position+ = \verb+list->size+$ alors on insére en fin de liste. Si $0<\verb+position+<\verb+list->size+$ alors on fait appel à la fonction \verb+search+ explicitée ci-dessus en section \ref{search}. 
+            \begin{lstlisting}[label=some-code,caption=F5 (L M) version récusive 2,language=lisp]
+                (defun F5 (L M) 
+	              (cond
+		            ((NULL L) T)
+		            ((NULL M) NIL)
+		            ((verifF5 L M) T)
+		            (T (F5 L (rest M)))
+	              )
+                )
+            \end{lstlisting} 
+            \newpage      
+            La fonction suivante vérifie les termes consécutifs.
             
-            Lorsque l'élément à la position désirée est trouvé, la fonction va alors créer un nouvel élément et l'insérer après l'élément renvoyé par la fonction \verb+search+. Les différentes variables seront affectées avec les bonnes valeurs.\\
+                      \begin{algorithm}
+            \caption{Algorithme de vérification}
+            \begin{algorithmic}
+            \If {$L = NIL$}
+                \State retourner $T$
+            \ElsIf {$M = NIL$}
+                     \State retourner $T$
+            \ElsIf {$L[1] = M[1]$}                  
+                    \State retourner $verifF5(rest(L),rest(M))$
+            \Else 
+                    \State retourner $NIL$        
+            \EndIf        
+            \end{algorithmic}
+            \end{algorithm}
             
-            Ici, dans les meilleurs cas la fonction se termine en $\bigO{1}$. C'est à dire les cas où la liste est vide, $\verb+position+ = 1$ ou $\verb+position+=\verb+list->size+$. Sinon, on est en $\bigO{n-1} \subseteq \bigO{n}$. Finalement, la complextié de cette fonction est $\Omega(1)$ et $\bigO{n}$.
+            \begin{lstlisting}[label=some-code,caption=verifF5 (L M) version récusive 2,language=lisp]
+                (defun verifF5 (L M)
+	              (cond
+		            ((NULL L) T)
+		            ((NULL M) NIL)
+		            ((eq (first L) (first M)) (verifF5 (rest L) (rest M)))
+		            (T NIL)
+	              )
+                )
+            \end{lstlisting} 
         
-        \newpage    
+        \chapter{\'Exercice 2}   
             
-        \section{Suppression d'un élément}
-           \begin{verbatim}
-        int _remove (List *list, int position);
-           \end{verbatim}
-            \begin{description}
-            \item[Entrée :] Un pointeur sur une structure de liste, un entier pour la position de l'élément que l'on souhaite supprimer.
-            \item[Sortie :] $-1$ si $\verb+position+ > \verb+list->size+$ ou $\verb+position+ \leqslant 0$ , $0$ en cas de succés.
-            \end{description}  
-            Comme avec l'insertion à une position donnée on va d'abord véréfier $2$ conditions. On va tester si la liste n'est pas vide et si la position donnée est bien dans les limites de la liste. Une fois ceci vérifier on se débarasse des cas triviaux, c'est à dire si $\verb+position+ = 1$ on fait pointer la tête de la liste sur le deuxième élément puis on supprime l'élément qui précéde la nouvelle tête de liste et on met son pointeur \verb+previous+ à \verb+NULL+. On fait l'opération analogue si $\verb+position+ = \verb+list->size+$. Si $0<\verb+position+<\verb+list->size+$ on fait encore une fois appel à la fonction \verb+search+ pour trouver l'élément à supprimer puis dans l'ordre on fait :
-            \begin{enumerate}
-            \item On affecte au pointeur \verb+next+ de l'élément qui précède celui à supprimer la valeur du pointeur \verb+next+ dudit élément.
-            \item On affecte au pointeur \verb+previous+ de l'élément qui suit celui à supprimer la valeur du pointeur \verb+previous+ dudit élément.
-            \item On libère la mémoire occupée par l'élément à l'aide de l'instruction \verb+free+.
-            \end{enumerate}
-            Dans le cas de situation triviales la fonction se termine en $\Omega(1)$. Sinon, à nouveau on est en $\bigO{n}$. En conclusion la complexité de la fonction est $\Omega(1)$ et $\bigO{n}$.
+        Cet exercice consistant purement à la compréhension de la fonction mapcar dans un exemple plutôt simple, il n’y pas de commentaires dessus.
+        
+        \begin{lstlisting}[label=some-code,caption=list-carres (L) avec fonction lambda,language=lisp]
+                (defun list-carres (L)
+                  (mapcar (lambda (x)(* x x)) L)
+                ) 
+            \end{lstlisting}
+        
+        \chapter{\'Exercice 3}       
+            My-assoc est une fonction qui recherche si la clé donner en argument se trouve dans la liste.
+        \section{Algorithmique}
+        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
+        \begin{algorithm}
+            \caption{Algorithme de My-Assoc}
+            \begin{algorithmic}
+                \If {$cle != cle de L[1]$}
+                    \State retourner $my-assoc(cle,rest(L))$
+                \Else
+                    \State retourner la paire
+                \EndIf      
+            \end{algorithmic}
+            \end{algorithm}
+            \section{Code source}
+            Et voici le code source de ladite fonction.
+            \begin{lstlisting}[label=some-code,caption=My\_{}Assoc (cle a-liste) version récusive,language=lisp]
+                (defun my-assoc (cle a-liste)
+                  (if (null a-liste)
+                    NIL
+                    (if (equal (first (first a-liste)) cle) 
+                      (first a-liste) 
+                      (my-assoc cle (rest a-liste))
+                     )
+                   )
+                )
+            \end{lstlisting} 
+            \newpage
+            \chapter{\'Exercice 4}
+                \section{Petites fonctions pour commencer}
+                Pour retourner le nom il suffit de logiquement renvoyer le premier élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=nom(Personne),language=lisp]
+                (defun nom (pers) (first pers))
+            \end{lstlisting}
             
+            Pour retourner le prénom il suffit de logiquement renvoyer le second élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=prenom(Personne),language=lisp]
+                (defun prenom (pers) (cadr pers))
+            \end{lstlisting} 
             
-        \section{Fonction de tri ascendant}
-                        \begin{verbatim}
-                    int ascending_sort (List *list);
-                \end{verbatim}
-            Nous en arrivons à \textit{"The Funtion"}. Le problème du tri est un problème universel et de nombreux algorithmes existent pour résoudre ce problème. Les algorithme programmé de manière naïve démontrent leur inutilité sur de grosses quantité de données mais sont néanmoins intuitif et immédiat à implementer. Leur complexité est en générale en $\bigO{n^2}$. Inutilisable, donc, lorsqu'il s'agit de traiter des millions de données. Ils existent, cependant, des algorithmes au temps d'éxécution moins prohibitif. Celui que nous avons choisi d'implémenter dans ce TP est l'un des plus connu et a été largement pompé sur wikipedia et nous l'avons adapté à nos besoins. Il s'agit, ni plus, ni moins, du très célèbre algorithme du \textbf{Tri rapide}.\\
+            Pour retourner la ville il suffit de logiquement renvoyer le troisième élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=ville(Personne),language=lisp]
+                (defun ville (pers) (caddr pers))
+            \end{lstlisting} 
             
-            L'algorithme du tri rapide a une complexité en $\bigO{n^2}$ dans le pire des cas mais en $\bigO{nlog(n)}$ dans le meilleur des cas. Cet procédure se base sur le paradigme de \textit{"diviser pour régner"} et se déompose en deux fonctions.
-                      
+            Pour retourner l’âge il suffit de logiquement renvoyer l'avant avant dernier élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=age(Personne),language=lisp]
+                (defun age (pers) (cadddr pers))
+            \end{lstlisting} 
             
-            \subsection{Fonction de partionnement}
-                \begin{verbatim}
-                    int partitionner(List* list, int first, int last);
-                \end{verbatim}
-                \begin{description}
-                    \item[Entrée :] Un pointeur sur une structure de liste, deux entiers respectivement la limite inférieur et la limite supérieur des éléments à trier.
-                    \item[Sortie :] Un entier représentant la position de l'élément pivot.
-                \end{description}
-                
-                \newpage
-                
-                La procédure de partionnement est la plus importante dans l'implémentation du tri rapide. Elle implémente le principe de \textit{"diviser"} cité dans le paradigme ci-dessus. Elle permet en effet de partitionner la liste en fonction d'un élément appelé pivot. À la fin de l'exécution de cette fonction on aura alors une liste diviser en deux sous-listes pseudo ordonnées telles que tous les éléments d'une liste auront des variables \verb+data+ de valeurs inférieures du point de vu du code ASCII et ceux de l'autre auront des \verb+data+ supérieures. Ainsi on divise le problème en deux sous problèmes de tailles inférieurs
-                
-                La complexité de l'algorithme de tri rapide repose en grande partie sur cette fonction de partition et plus précisément sur le choix de l'élément pivot. En effet, si mal choisi la complexité pourra être en $\bigO{n^2}$ et le choix de cet algorithme deviendra caduque. Le pire des cas est en fait celui où l'élément pivot choisi est le plus grand de la liste. Dans ce cas la fonction ne produira qu'une seule liste de taille égale au problème de départ où tous les éléments seront forcément inférieurs à l'élément pivot. Le principe de \textit{"diviser"} n'est alors plus respecter et nous revenons au problème du tri par insertion.\\
-                
-                Le principe de fonctionnement de la fonction est assez compliqué à détailler et je vais tenter de faire simple. Nous commençons par l'initialisation durant laquelle nous initialisons arbitrairement l'élément pivot comme étant la queue de la liste. Ensuite, nous allons initialisé \verb+ei+ et \verb+ej+ comme des pointeurs sur les éléments au position associées. \verb+el+ est ici un élément qui ne sert à rien je dois le dire, mais il s'avère que la procédure ne fonctionne pas sans lui pour des raisons qui je le crains m'échappent. Durant la boucle, les différents éléments de la liste vont être placé dans la partition qui leur est associé. À droite pour les éléments supérieurs au pivot et à gauche sinon. Ce qui nous donne l'invariant de boucle suivant.
-            \begin{description}
-            \item[Invariant de boucle :]  
-                      
-            \begin{enumerate}
-            \item Si $p \leqslant k \leqslant i$ alors $ek \leqslant ep$
-            \item Si $i+1 \leqslant k \leqslant j-1$ alors $ek > ep$
-            \item Si $k=el$, alors $ek=ep$
+            Pour retourner le nombre de livre il suffit de logiquement retourner le dernier élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=nom(Personne),language=lisp]
+                (defun nom (pers) (first pers))
+            \end{lstlisting} 
             
-            \end{enumerate}
-            où $ek$ représente l'élément à la position k.
-            \end{description}    
-            \subsection{Fonction Quicksort}
-             \begin{verbatim}
-                    void QuickSort(List* list, int first, int last);
-                \end{verbatim}
-                \begin{description}
-                    \item[Entrée :] Un pointeur sur une structure de liste, deux entiers respectivement la limite inférieur et la limite supérieur des éléments à trier.
-                    \item[Sortie :] Rien théoriquement mais produit une liste trier.
-                \end{description}
-                Cette fonction s'occupe des appels récursifs afin de trier les sous listes $1..pi-1$ et $pi+1..n$, où $pi$ est la position pivot renvoyé par la fonction de partionnement.
-                
-                Pour le calcul de la complexité on a dans le pire des cas, c'est à dire si on a un élément pivot mal adapté on ne divisera pas le problème en deux sous problèmes ce qui implique une complexité en $\bigO{n^2}$. En revanche, dans le meilleur des cas, si on prend l'élément médian de la liste on aura diviser le problème en deux sous problèmes de taille égale et donc une compléxité en $\bigO{nlog(n)}$.
-                
-                \newpage
-                
-        \section{Fonction de tri descendant}
-         \begin{verbatim}
-                    int descending_sort (List *list);
-                \end{verbatim}
-             
-                Cette fonction est similaire à la précédante si ce n'est qu'elle fait appel à la fonction de tri ascendant pour ensuite inverser la liste en faisant appel à la fonction \verb+reverse+. La fonction \verb+reverse+ parcours la liste et inverse tous les pointeurs des cellules.\\
-                
-                Dans le meilleur des cas cette fonction est donc en $\bigO{n}$ et dans le pire elle est en $\bigO{n^2}$.
-                
-         \section{Afficher une liste}
-                 \begin{verbatim}
-                    void display(List *list);
-                \end{verbatim}
-                \begin{description}
-                    \item[Entrée :] Un pointeur sur une structure de liste.
-                    \item[Sortie :] Rien.
-                \end{description}                
-                Cette procédure va parcourir la liste est afficher les valeurs des chaines de caractère de chaque cellule. La complexité de cette procédure est donc $\Theta(n)$
-         \section{Afficher une liste à l'envers}
-                 \begin{verbatim}
-                    void display_reverse(List *list);
-                \end{verbatim}
-                \begin{description}
-                    \item[Entrée :] Un pointeur sur une structure de liste.
-                    \item[Sortie :] Rien.
-                \end{description}                
-                De même que la procédure précédente, cette fonction va d'abord faire appel à \verb+reverse+ puis afficher les valeurs des chaines de caractère de chaque cellule. La complexité de cette procédure est donc $\Theta(n)$ 
-         \section{Détruire la liste}
-                 \begin{verbatim}
-                    void destruct (List *list);
-                \end{verbatim}
-                \begin{description}
-                    \item[Entrée :] Un pointeur sur une structure de liste.
-                    \item[Sortie :] Rien.
-                \end{description}                
-                Pour terminer cettte étude sur certaines fonctions que nous avons implémentées, la fonction destruct va parcourir la liste et libérer les espaces mémoires alloués dynamiquement au moment de la création des divers éléments composant la liste. Et enfin elle va terminer en libérant l'espace alloué à la structure List.\\
-                
-                Cette procédure parcours la liste quelque soit le cas on a donc une complexité en $\Theta(n)$.   
-                
-                \newpage
-                
-          \chapter{R\'eflexion}	
-          
-          Vous remarquerez que je n'ai pas pris la peine d'expliciter plusieurs fonctions et je le regrette mais c'est par manque de temps. D'autre part, j'ai juger que ces fonctions ne nécessite pas explicitation car elles ont été codé intuitivement. 
-          
-          En ce qui concerne les possibilités d'améliorations de notre programme, pour l'instant je ne vois aucun gros changement à apporter qui pourrait modifier drastiquement la complexité de nos procédures. Il y a un changement que j'apporterai néanmoins à la procédure de recherche. Par exemple, quelque soit la position de l'objet que nous souhaitons trouver nous commençons toujours par le début, il faudrait alors pour diviser la complexiter de la procédure par deux rechercher en fonction de l'indice.	                                    
+            Pour retourner le nom il suffit de logiquement renvoyer le premier élément de la liste.
+              \begin{lstlisting}[label=some-code,caption=nombre-livre(Personne),language=lisp]
+                (defun nombre-livre (pers) (car (last pers)))
+            \end{lstlisting} 
+            
+            Pour les questions les premières fonctions sont triviales cependant la dernière fonction (FB6) à été difficilement réalisable en version récursive de par la nature même de la question ( en récursif pur, celà reviendrai à faire une moyenne progressive).
+           \newpage
+              \section{Personnes contenues dans la base de données.}
+              Je vais tout simplement retourner toute la base données.
+              \begin{lstlisting}[label=some-code,caption=FB1(data),language=lisp]
+                (defun FB1 (data) 
+                  (if (null (rest data)) 
+                    data 
+                    (cons (first data) (FB1 (rest data)))
+                  )
+                )
+            \end{lstlisting}
+            
+            \section{Les personnes qui s'appellent Pierrot.}
+        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
+        \begin{algorithm}
+            \caption{Algorithme de Pierrot}
+            \begin{algorithmic}
+                \If {$data = NIL$}
+                    \State retourner $data$
+                \ElsIf {$nom(data[1]) = $"Pierrot"}
+                    \State retourner $(data[1] FB2(rest(data)))$
+                \Else
+                    \State retourner $FB2(rest (data))$    
+                \EndIf      
+            \end{algorithmic}
+            \end{algorithm}
+            \begin{lstlisting}[label=some-code,caption=FB2(data),language=lisp]
+                (defun FB2 (data) 
+                  (if (null data) 
+                    data 
+	                (if (eq (nom (first data)) 'Pierrot) 
+	                  (cons (first data) (FB2 (rest data))) 
+		              (FB2 (rest data))
+		            )
+	              )
+                )
+            \end{lstlisting} 
+            \newpage
+           \section{Les personnes avec le nom donné en argument.}
+        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
+        \begin{algorithm}
+            \caption{Algorithme de nom}
+            \begin{algorithmic}
+                \If {$data = NIL$}
+                    \State retourner $data$
+                \ElsIf {$nom(data[1]) = name$}
+                    \State retourner $(data[1] FB2(rest(data), name))$
+                \Else
+                    \State retourner $FB2(rest (data), name)$    
+                \EndIf      
+            \end{algorithmic}
+            \end{algorithm}
+            \begin{lstlisting}[label=some-code,caption=FB3(data name),language=lisp]
+                (defun FB3 (data name) 
+                  (if (null data) 
+                    data 
+	                (if (eq (nom (first data)) name) 
+	                  (cons (first data) (FB2 (rest data) name)) 
+		              (FB2 (rest data) name)
+		            )
+	              )
+                )
+            \end{lstlisting} 
+            
+            \section{Les personnes avec X années.}
+        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
+        \begin{algorithm}
+            \caption{Algorithme de l'âge}
+            \begin{algorithmic}
+                \If {$data = NIL$}
+                    \State retourner $NIL$
+                \ElsIf {$age(data[1]) = X$}
+                    \State retourner $data[1]$
+                \Else
+                    \State retourner $FB4(rest (data))$    
+                \EndIf      
+            \end{algorithmic}
+            \end{algorithm}
+            \begin{lstlisting}[label=some-code,caption=FB4(data X),language=lisp]
+                (defun FB4 (data x) 
+                  (if (null data) 
+                    NIL
+	                (if (= (age (first data)) x) 
+	                  (first data) 
+	                  (FB4 (rest data) x)
+	                )
+	              )
+                )
+            \end{lstlisting} 
+            \newpage  
+            
+       \section{Les personnes ayant moins de X livres.}
+        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
+        \begin{algorithm}
+            \caption{Algorithme de l'âge}
+            \begin{algorithmic}
+                \If {$data = NIL$}
+                    \State retourner $NIL$
+                \ElsIf {$nombre-livre(data[1]) \leq X$}
+                    \State retourner $data[1]$
+                \Else
+                    \State retourner $FB5(rest (data))$    
+                \EndIf      
+            \end{algorithmic}
+            \end{algorithm}
+            \begin{lstlisting}[label=some-code,caption=FB5(data X),language=lisp]
+                (defun FB5 (data x) 
+                  (if (null data) 
+                    NIL
+	                (if (< (nombre-livre (first data)) x) 
+	                  (first data) 
+	                  (FB5 (rest data) x)
+	                )
+	              )
+                )
+            \end{lstlisting}       
+            
+           \section{Moyenne des ages de la famille X.}
+        
+            \begin{lstlisting}[label=some-code,caption=FB6(data X),language=lisp]
+                (defun FB6 (data x) (
+    (setq c 0)
+    (setq sum 0)
+    (dolist (el data) (
+        (if (eq (name el) x) (
+            (setq sum (+ sum (age el)))
+            (setq c (+ c 1))
+        ))
+    ))
+    (if (eq c 0) 0 (
+        (/ sum c)
+    ))
+))
+            \end{lstlisting}                 
 \end{document}
