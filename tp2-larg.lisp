@@ -40,7 +40,7 @@
 			)
 		)
 	)
-	(if (null Q) "END" (solve-larg Q))	
+	(if (null Q) "END" (BFS-larg Q))	
 )	
 
 (defun init-solve (state)
@@ -50,7 +50,7 @@
 )
 
 ;parcours en profondeur
-(defun solve (state previous-states)
+(defun DFS-solve (state previous-states)
 	(cond
 		((equal state '(0 0 0))
 			(print "Solution:") (print (nconc previous-states (list '(0 0 0)))))
@@ -62,8 +62,8 @@
                 ;verifier que l'on ne retourne pas dans un état déjà 
                 (if (and (not (in res previous-states)) (verify res))
                     (if (null previous-states)
-                        (solve res (list state))
-                        (solve res (nconc previous-states (list state)))
+                        (DFS-solve res (list state))
+                        (DFS-solve res (nconc previous-states (list state)))
                     )
                 )
             )
