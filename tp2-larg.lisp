@@ -22,7 +22,7 @@
 )
 
 ;parcours en largeur
-(defun solve-larg (Q)
+(defun BFS-solve (Q)
 	(dolist (node Q)
 		(setq Q (dequeue Q))
 		(cond 
@@ -45,7 +45,7 @@
 
 (defun init-solve (state)
 	(let ((Q (enqueue (list state '()) '())))
-		(solve-larg Q)
+		(BFS-solve Q)
 	)	
 )
 

@@ -42,8 +42,9 @@
     \tableofcontents
 \newpage
 \section*{Remarques générales}
-		
-        \chapter{Question n°1}        
+		Ce TP, bien que pas facile, nous a ammener à implémenter des fonctions de parcours d'états en fonction de conditions fixées au départ. C'est-à-dire que nous devions à chaque fois que l'on changeait d'état vérifier si l'état était cohérent par rapport à l'ennoncé qui nous été donné. C'est, au final, un TP très instructif et amusant même.
+        \chapter{Préparation du problème}  
+        \section{Question n°1}      
             Suivons le formalisme donné dans l'ennoncé. Un état est ainsi représenté : (État rive gauche, État rive droite) sachant qu'un état d'une rive est donné par (nombre de Missionnaire, nombre de Cannibale, 1 si le bâteau est amarré à la rive 0 sinon). Ainsi nous obtenons l'ensemble des états : 
             \[ \text{Ensemble d'état} = 
             \{ ((3\ 3\ 1) (0\ 0\ 0)),
@@ -77,7 +78,7 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
             ...
             \}\]
 
-		\chapter{Question n°2}     
+		\section{Question n°2}     
             On donne l'ensemble des opérateurs comme suit :
                $$
                \left\{
@@ -90,15 +91,24 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
     Bien sûr on a fait la distinction entre les opérations que l'ont peut effectué sur la rive gauche et droite. Les opérations dangereuses pour les missionaires sont, d'une manière générale celles durant lesquels des missionnaires sont déplacés d'un bord à l'autre sans pour autant que des cannibales soient déplacés. 
         
         \newpage
-        \chapter{Question n°3} 
+        \section{Question n°3} 
         On donne l'état initial comme ceci :
             \[(3\ 3\ 1)\]
             On a également l'état final :
             \[(0\ 0\ 0)\]
             
-            \chapter{Question n°4}
+            \section{Question n°4}
             
-             \chapter{Question n°5}
+            \begin{figure}[h]
+            \begin{center}
+            \includegraphics[scale=0.40]{graph.png}
+            \end{center}
+            \caption{Arbre de résolution partiel}
+            \label{Arbre de résolution partiel}
+            \end{figure}
+            
+            
+             \chapter{Parcours de l'arbre pour trouver les solutions}
              On donne à présent les algorithmes pour la résolution de ce problème. Nous avons tenté de programmer l'algorithme des deux façons qui nous étaient proposés : parcours en largeur d'abord et en profondeur d'abord.
              
              Mais définissons tout d'abord les fonctions de services et les variables associés aux problèmes.
@@ -181,18 +191,30 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
             \end{lstlisting}
             
             \subsection{Fonction de parcours}
+            Voici donc la tant attendue fonction de parcours qui au terme de son execution doit donner les manières de résoudre le problème donné.
             \subsubsection{Algorithme}
             \begin{algorithm}
             \caption{Algorithme de parcours en largeur d'abord}
             \begin{algorithmic}
+            \While{Q is not empty}
+            \State node := Q[1]
+            \State dequeue(Q)
             \If {$car(x) = (0\ 0\ 0)$}
-                \State retourner $T$
-            \ElsIf {$L[1] \in M$}
-                     \State retourner $(L[1] F4(L / L[1]))$
-            \Else                   
-                    \State retourner $F4(L \ L[1])$
+                \State retourner $cadr(node) + (0\ 0\ 0)$
+            \ElsIf {$verify(car\ node)$}
+                     \ForAll{$x \in \left\{\begin{array}{ll}*R-ops*&\text{si }cadr(car(node))=0\\
+                     *L-ops*&\text{si }cadr(car(node))=1 \end{array}\right.
+$}
+            \State res := $apply-op(car(node),op)$
+            \If {$not\ in(res,cadr(node))$ and $verify(res)$}
+                    \State Q := $\left\{\begin{array}{ll}
+                    enqueue(((res)\ (car(node))),Q)&\text{si }cadr(node)=NIL\\
+                    enqueue(((res)\ (cadr(node) +car(node))),Q)&\text{sinon}
+                    \end{array}\right.$
+            \EndIf
+            \EndFor
             \EndIf   
-   
+            \EndWhile
             \end{algorithmic}
             \end{algorithm}  
             \subsubsection{Implémentation en lisp}
@@ -202,10 +224,9 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
     (setq Q (dequeue Q))
       (cond 
 	    ((equal (car node) '(0 0 0)) 
-	      (print "One of the solution is ") 
+	      (print "Solution: ") 
 	      (print (append (cadr node) (list '(0 0 0)))))  
 	    ((verify (car node)) 
-	      (let ((res '()))
 	      (dolist 
 	        (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
 	        (setq res (apply-op (car node) op))
@@ -226,376 +247,83 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
 	)
   )
 )
-(if (null Q) "END" (solve-larg Q))	
+(if (null Q) "END" (BFS-solve Q))	
 )
             \end{lstlisting}
-          
-            \begin{lstlisting}[label=some-code,caption=F2 (N L) version itérative,language=lisp]
-               (defun F2Iter (N L)
-	             (if (< N (length L))
-		           (let ((out NIL))
-			         (dotimes 
-			           (x (+ N 1)
-			        out)
-		       (cons out (nth x L))
-			   )
-		       )
-		       (print "The number you chose is not correct")
-	           )
-               )
-            \end{lstlisting}        
-F2rec et F2iter retourne la tête de la liste L formée par les N premiers éléments de la liste L.
-            
-            
-        \section{Retourner la concaténation de deux listes}
-                    
-            \begin{lstlisting}[label=some-code,caption=F3 (L M) version recursive,language=lisp]
-                (defun F3rec (L M)
-                  (if (null L) M
-                    (F3rec (rest L) (cons (first L) M))
-                  )
-                )
-            \end{lstlisting}
-          
-            \begin{lstlisting}[label=some-code,caption=F3 (L M) version itérative,language=lisp]
-                (defun F3iter (L M)
-                  (append L M)
-                )
-            \end{lstlisting}       
-F3rec et F3iter retournent la concaténation des deux listes L et M.
-
-
-        \newpage
-        
-        \section{Intersection de deux listes}
-            \begin{algorithm}
-            \caption{Algorithme pour l'intersection de deux listes}
+          Après l'execution de cette fonction nous obtenons bien les 4 solutions que nous attendions selon l'arbre dessiné plus haut.
+            \begin{lstlisting}[label=some-code,caption=Résultat d'execution de la fonction de parcours en largeur d'abord.,language=lisp]
+"Parcours en largeur" 
+"Solution:" 
+((3 3 1) (2 2 0) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0) (0 3 1)
+ (0 1 0) (0 2 1) (0 0 0)) 
+"Solution:" 
+((3 3 1) (2 2 0) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0) (0 3 1)
+ (0 1 0) (1 1 1) (0 0 0)) 
+"Solution:" 
+((3 3 1) (3 1 0) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0) (0 3 1)
+ (0 1 0) (0 2 1) (0 0 0)) 
+"Solution:" 
+((3 3 1) (3 1 0) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0) (0 3 1)
+ (0 1 0) (1 1 1) (0 0 0))  
+            \end{lstlisting}             
+        \section{Parcours en profondeur d'abord}
+                    La fonction suivante sert à parcourir les états mais cette fois-ci en profondeur d'abord. En revanche, la fonction ne renvoi le résultat attendu et nous ne savons pas pourquoi.
+             \subsubsection{Algorithmique}     
+             \begin{algorithm}
+            \caption{Algorithme de parcours en profondeur d'abord}
             \begin{algorithmic}
-            \If {$L = NIL$}
-                \State retourner $T$
-            \ElsIf {$L[1] \in M$}
-                     \State retourner $(L[1] F4(L / L[1]))$
-            \Else                   
-                    \State retourner $F4(L \ L[1])$
-            \EndIf        
+            \If {$car(x) = (0\ 0\ 0)$}
+                \State retourner $previous-states + (0\ 0\ 0)$
+            \ElsIf {$not\ verify(state)$}
+                \State retourner NIL
+            \Else   
+                \ForAll{$x \in \left\{\begin{array}{ll}*R-ops*&\text{si }cadr(car(node))=0\\
+                     *L-ops*&\text{si }cadr(car(node))=1 \end{array}\right.
+$}
+            \State res := $apply-op(car(node),op)$
+            \If {$not\ in(res,cadr(node))$ and $verify(res)$}
+                    \State retourner $\left\{\begin{array}{ll}
+                    DFS-solve(res,(state))&\text{si }previous-states=NIL\\
+                    DFS-solve(res,previous-states+state)&\text{sinon}
+                    \end{array}\right.$
+            \EndIf
+            \EndFor
+            \EndIf   
             \end{algorithmic}
-            \end{algorithm}
-            
-            
-            \begin{lstlisting}[label=some-code,caption=F4 (L M) version recursive,language=lisp]
-                (defun F4rec (L M)
-	              (if (NULL L) L
-		            (if (member (first L) M) 
-		              (cons (first L) (F4rec (rest L) M)) 
-                              (F4rec (rest L) M)
-		            )	
-	              )
-                ) 
-            \end{lstlisting}
-          
-            \begin{lstlisting}[label=some-code,caption=F4 (L M) version itérative,language=lisp]
-                (defun F4iter (L M)
-	              (let ((out '()))
-		            (if (< (length L) (length M))
-			          (dolist (x L out) 
-				        (if (member x M)
-					      (cons out x)
-				        ) 
-			          )
-			          (dolist (x M out)
-				        (if (member x L)
-					      (cons out x)
-				        )
-			          )
-		            )
-	              )
-                )
-            \end{lstlisting}       
-F4rec et F4iter retournent l'intersection des deux listes. Attention, cependant, après test la fonction F4iter ne retourne pas ce que l'on souhaite.
-          
-
-        \section{Inclusion de deux listes}
-        La première fonction a été produite avant la réception des spécifications que Mme Abel nous a envoyé en plus. Elle vérifie simplement que tous les éléments de la première liste sont dans la seconde, et ce, indépendamment de l’ordre dans lequel les éléments sont.
-                    \begin{algorithm}
-            \caption{Algorithme pour l'inclusion de deux listes version 1}
-            \begin{algorithmic}
-            \If {$L = NIL$}
-                \State retourner $T$
-            \ElsIf {$L[1] \in M$}
-                     \State retourner $F4(L \ L[1])$
-            \Else                   
-                    \State retourner $NIL$
-            \EndIf        
-            \end{algorithmic}
-            \end{algorithm}
-        \newpage
-        \begin{lstlisting}[label=some-code,caption=F5 (N L) version recursive 1,language=lisp]
-(defun F5 (L M) 
-	(if (NULL L) T 
-		(if (member (first L) M) (F5 (rest L) M) 
-			NIL
-		)
-	)
+            \end{algorithm}  
+            \subsubsection{Implémentation en lisp}        
+            \begin{lstlisting}[label=some-code,caption=DFS-solve (state previous-states) version profondeur d'abord,language=lisp]
+(defun DFS-solve (state previous\-{}states)
+  (cond
+    ((equal state '(0 0 0))
+      (print "Solution:")
+      (print (nconc previous\-{}states (list '(0 0 0)))))
+     ((not (verify state)) nil)
+     (T
+       (dolist 
+         (op (if (eq (caddr state) 0) *R-ops* *L-ops*))
+         (setq res (apply\-{}op state op))
+         (if (and (not (in res previous\-{}states)) (verify res))
+           (if (null previous-states)
+             (DFS-solve res (list state))
+             (DFS-solve res (nconc previous-states (list state)))
+           )
+         )
+       )
+     )
+   )  
 )
             \end{lstlisting}
-          Cet seconde fonction tient, cette fois-ci, compte de l’ordre des éléments de la première liste. Par exemple si la liste L est définie comme L=(1 2) et M comme M=(1 3 5 2) alors la fonction retournera NIL alors qu’avec M=(1 2 5 3) elle renverra T. La composition de ces deux fonctions, en revanche, nous donne une compléxité plutôt très mauvaise puisque dans le pire des cas on a une complexité en $\bigO{card(L)*card(M)}$ c’est à dire, en simplifiant, $\bigO{n^2}$.
-          \begin{algorithm}
-            \caption{Algorithme pour l'inclusion de deux listes version 2}
-            \begin{algorithmic}
-            \If {$L = NIL$}
-                \State retourner $T$
-            \ElsIf {$M = NIL$}
-                     \State retourner $T$
-            \ElsIf {$verifF5(L,M)$}                  
-                    \State retourner $T$
-            \Else 
-                    \State retourner $NIL$        
-            \EndIf        
-            \end{algorithmic}
-            \end{algorithm}
-            
-            \begin{lstlisting}[label=some-code,caption=F5 (L M) version récusive 2,language=lisp]
-                (defun F5 (L M) 
-	              (cond
-		            ((NULL L) T)
-		            ((NULL M) NIL)
-		            ((verifF5 L M) T)
-		            (T (F5 L (rest M)))
-	              )
-                )
-            \end{lstlisting} 
-            \newpage      
-            La fonction suivante vérifie les termes consécutifs.
-            
-                      \begin{algorithm}
-            \caption{Algorithme de vérification}
-            \begin{algorithmic}
-            \If {$L = NIL$}
-                \State retourner $T$
-            \ElsIf {$M = NIL$}
-                     \State retourner $T$
-            \ElsIf {$L[1] = M[1]$}                  
-                    \State retourner $verifF5(rest(L),rest(M))$
-            \Else 
-                    \State retourner $NIL$        
-            \EndIf        
-            \end{algorithmic}
-            \end{algorithm}
-            
-            \begin{lstlisting}[label=some-code,caption=verifF5 (L M) version récusive 2,language=lisp]
-                (defun verifF5 (L M)
-	              (cond
-		            ((NULL L) T)
-		            ((NULL M) NIL)
-		            ((eq (first L) (first M)) (verifF5 (rest L) (rest M)))
-		            (T NIL)
-	              )
-                )
-            \end{lstlisting} 
-        
-        \chapter{\'Exercice 2}   
-            
-        Cet exercice consistant purement à la compréhension de la fonction mapcar dans un exemple plutôt simple, il n’y pas de commentaires dessus.
-        
-        \begin{lstlisting}[label=some-code,caption=list-carres (L) avec fonction lambda,language=lisp]
-                (defun list-carres (L)
-                  (mapcar (lambda (x)(* x x)) L)
-                ) 
-            \end{lstlisting}
-        
-        \chapter{\'Exercice 3}       
-            My-assoc est une fonction qui recherche si la clé donner en argument se trouve dans la liste.
-        \section{Algorithmique}
-        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
-        \begin{algorithm}
-            \caption{Algorithme de My-Assoc}
-            \begin{algorithmic}
-                \If {$cle != cle de L[1]$}
-                    \State retourner $my-assoc(cle,rest(L))$
-                \Else
-                    \State retourner la paire
-                \EndIf      
-            \end{algorithmic}
-            \end{algorithm}
-            \section{Code source}
-            Et voici le code source de ladite fonction.
-            \begin{lstlisting}[label=some-code,caption=My\_{}Assoc (cle a-liste) version récusive,language=lisp]
-                (defun my-assoc (cle a-liste)
-                  (if (null a-liste)
-                    NIL
-                    (if (equal (first (first a-liste)) cle) 
-                      (first a-liste) 
-                      (my-assoc cle (rest a-liste))
-                     )
-                   )
-                )
-            \end{lstlisting} 
-            \newpage
-            \chapter{\'Exercice 4}
-                \section{Petites fonctions pour commencer}
-                Pour retourner le nom il suffit de logiquement renvoyer le premier élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=nom(Personne),language=lisp]
-                (defun nom (pers) (first pers))
-            \end{lstlisting}
-            
-            Pour retourner le prénom il suffit de logiquement renvoyer le second élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=prenom(Personne),language=lisp]
-                (defun prenom (pers) (cadr pers))
-            \end{lstlisting} 
-            
-            Pour retourner la ville il suffit de logiquement renvoyer le troisième élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=ville(Personne),language=lisp]
-                (defun ville (pers) (caddr pers))
-            \end{lstlisting} 
-            
-            Pour retourner l’âge il suffit de logiquement renvoyer l'avant avant dernier élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=age(Personne),language=lisp]
-                (defun age (pers) (cadddr pers))
-            \end{lstlisting} 
-            
-            Pour retourner le nombre de livre il suffit de logiquement retourner le dernier élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=nom(Personne),language=lisp]
-                (defun nom (pers) (first pers))
-            \end{lstlisting} 
-            
-            Pour retourner le nom il suffit de logiquement renvoyer le premier élément de la liste.
-              \begin{lstlisting}[label=some-code,caption=nombre-livre(Personne),language=lisp]
-                (defun nombre-livre (pers) (car (last pers)))
-            \end{lstlisting} 
-            
-            Pour les questions les premières fonctions sont triviales cependant la dernière fonction (FB6) à été difficilement réalisable en version récursive de par la nature même de la question ( en récursif pur, celà reviendrai à faire une moyenne progressive).
-           \newpage
-              \section{Personnes contenues dans la base de données.}
-              Je vais tout simplement retourner toute la base données.
-              \begin{lstlisting}[label=some-code,caption=FB1(data),language=lisp]
-                (defun FB1 (data) 
-                  (if (null (rest data)) 
-                    data 
-                    (cons (first data) (FB1 (rest data)))
-                  )
-                )
-            \end{lstlisting}
-            
-            \section{Les personnes qui s'appellent Pierrot.}
-        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
-        \begin{algorithm}
-            \caption{Algorithme de Pierrot}
-            \begin{algorithmic}
-                \If {$data = NIL$}
-                    \State retourner $data$
-                \ElsIf {$nom(data[1]) = $"Pierrot"}
-                    \State retourner $(data[1] FB2(rest(data)))$
-                \Else
-                    \State retourner $FB2(rest (data))$    
-                \EndIf      
-            \end{algorithmic}
-            \end{algorithm}
-            \begin{lstlisting}[label=some-code,caption=FB2(data),language=lisp]
-                (defun FB2 (data) 
-                  (if (null data) 
-                    data 
-	                (if (eq (nom (first data)) 'Pierrot) 
-	                  (cons (first data) (FB2 (rest data))) 
-		              (FB2 (rest data))
-		            )
-	              )
-                )
-            \end{lstlisting} 
-            \newpage
-           \section{Les personnes avec le nom donné en argument.}
-        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
-        \begin{algorithm}
-            \caption{Algorithme de nom}
-            \begin{algorithmic}
-                \If {$data = NIL$}
-                    \State retourner $data$
-                \ElsIf {$nom(data[1]) = name$}
-                    \State retourner $(data[1] FB2(rest(data), name))$
-                \Else
-                    \State retourner $FB2(rest (data), name)$    
-                \EndIf      
-            \end{algorithmic}
-            \end{algorithm}
-            \begin{lstlisting}[label=some-code,caption=FB3(data name),language=lisp]
-                (defun FB3 (data name) 
-                  (if (null data) 
-                    data 
-	                (if (eq (nom (first data)) name) 
-	                  (cons (first data) (FB2 (rest data) name)) 
-		              (FB2 (rest data) name)
-		            )
-	              )
-                )
-            \end{lstlisting} 
-            
-            \section{Les personnes avec X années.}
-        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
-        \begin{algorithm}
-            \caption{Algorithme de l'âge}
-            \begin{algorithmic}
-                \If {$data = NIL$}
-                    \State retourner $NIL$
-                \ElsIf {$age(data[1]) = X$}
-                    \State retourner $data[1]$
-                \Else
-                    \State retourner $FB4(rest (data))$    
-                \EndIf      
-            \end{algorithmic}
-            \end{algorithm}
-            \begin{lstlisting}[label=some-code,caption=FB4(data X),language=lisp]
-                (defun FB4 (data x) 
-                  (if (null data) 
-                    NIL
-	                (if (= (age (first data)) x) 
-	                  (first data) 
-	                  (FB4 (rest data) x)
-	                )
-	              )
-                )
-            \end{lstlisting} 
-            \newpage  
-            
-       \section{Les personnes ayant moins de X livres.}
-        Ci-dessous se trouve l'algorithme fait en pseudo-code de la fonction.
-        \begin{algorithm}
-            \caption{Algorithme de l'âge}
-            \begin{algorithmic}
-                \If {$data = NIL$}
-                    \State retourner $NIL$
-                \ElsIf {$nombre-livre(data[1]) \leq X$}
-                    \State retourner $data[1]$
-                \Else
-                    \State retourner $FB5(rest (data))$    
-                \EndIf      
-            \end{algorithmic}
-            \end{algorithm}
-            \begin{lstlisting}[label=some-code,caption=FB5(data X),language=lisp]
-                (defun FB5 (data x) 
-                  (if (null data) 
-                    NIL
-	                (if (< (nombre-livre (first data)) x) 
-	                  (first data) 
-	                  (FB5 (rest data) x)
-	                )
-	              )
-                )
+          $previous-states$ reprèsente les états déjà visités durant le parcours et $state$ reprèsente l'état courant.\newpage
+          Après l'excution de la fonction on obtiens le résultat suivant.
+            \begin{lstlisting}[label=some-code,caption=Résultat d'execution de la fonction de parcours en profondeur d'abord.,language=lisp]
+"Solution:" 
+((3 3 1) (2 2 0) (3 2 1) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0)
+ (0 3 1) (0 1 0) (0 2 1) (0 0 0)) 
+"Solution:" 
+((3 3 1) (3 1 0) (3 2 1) (3 2 1) (3 0 0) (3 1 1) (1 1 0) (2 2 1) (0 2 0)
+ (0 3 1) (0 1 0) (0 2 1) (0 0 0)) 
             \end{lstlisting}       
-            
-           \section{Moyenne des ages de la famille X.}
-        
-            \begin{lstlisting}[label=some-code,caption=FB6(data X),language=lisp]
-                (defun FB6 (data x) (
-    (setq c 0)
-    (setq sum 0)
-    (dolist (el data) (
-        (if (eq (name el) x) (
-            (setq sum (+ sum (age el)))
-            (setq c (+ c 1))
-        ))
-    ))
-    (if (eq c 0) 0 (
-        (/ sum c)
-    ))
-))
-            \end{lstlisting}                 
+
+                
 \end{document}
