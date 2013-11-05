@@ -40,7 +40,7 @@
 			)
 		)
 	)
-	(if (null Q) "END" (BFS-larg Q))	
+	(if (null Q) "END" (BFS-solve Q))	
 )	
 
 (defun init-solve (state)
@@ -87,7 +87,7 @@
 (init-solve '(3 3 1))
 (print "") 
 (print "Parcours en profondeur") 
-(solve '(3 3 1) '())
+(DFS-solve '(3 3 1) '())
 
 ;"Parcours en largeur" 
 ;"Solution:" 
