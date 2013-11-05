@@ -42,10 +42,8 @@
     \tableofcontents
 \newpage
 \section*{Remarques générales}
-
-      								
-    \chapter{Les cannibales et les missionaires}		
-        \section{Question n°1}        
+		
+        \chapter{Question n°1}        
             Suivons le formalisme donné dans l'ennoncé. Un état est ainsi représenté : (État rive gauche, État rive droite) sachant qu'un état d'une rive est donné par (nombre de Missionnaire, nombre de Cannibale, 1 si le bâteau est amarré à la rive 0 sinon). Ainsi nous obtenons l'ensemble des états : 
             \[ \text{Ensemble d'état} = 
             \{ ((3\ 3\ 1) (0\ 0\ 0)),
@@ -79,28 +77,171 @@ Alors on pourrait simplifier la liste des états. Du moment que l'on connait l'�
             ...
             \}\]
 
-		\section{Question n°2}     
+		\chapter{Question n°2}     
+            On donne l'ensemble des opérateurs comme suit :
+               $$
+               \left\{
+    \begin{array}{ll}
+    *R-ops* <= ((0\ 1)\ (1\ 0)\ (1\ 1)\ (2\ 0)\ (0 2))\\     
+                *L-ops* <= ((0\ -1)\ (-1\ 0)\ (-1\ -1)\ (-2\ 0)\ (0\ -2))
+    \end{array}
+    \right.
+    $$
+    Bien sûr on a fait la distinction entre les opérations que l'ont peut effectué sur la rive gauche et droite. Les opérations dangereuses pour les missionaires sont, d'une manière générale celles durant lesquels des missionnaires sont déplacés d'un bord à l'autre sans pour autant que des cannibales soient déplacés. 
+        
+        \newpage
+        \chapter{Question n°3} 
+        On donne l'état initial comme ceci :
+            \[(3\ 3\ 1)\]
+            On a également l'état final :
+            \[(0\ 0\ 0)\]
             
-            \begin{lstlisting}[label=some-code,caption=F2 (N L) version recursive,language=lisp]
-                (defun F2rec (N L)
-                  (if (> N 0)
-                    (cons (first L) (F2 (- N 1) (rest L)) )
-                    ())
-                )
+            \chapter{Question n°4}
+            
+             \chapter{Question n°5}
+             On donne à présent les algorithmes pour la résolution de ce problème. Nous avons tenté de programmer l'algorithme des deux façons qui nous étaient proposés : parcours en largeur d'abord et en profondeur d'abord.
+             
+             Mais définissons tout d'abord les fonctions de services et les variables associés aux problèmes.
+             
+             \section{Les opérations}
+             On donne la déclaration en lisp des listes correspondantes aux opérations que l'ont peut effectuer sur les états en fonction de la rive sur laquelle se trouve le bâteau.
+             \begin{lstlisting}[label=some-code,caption=Déclaration des opérations ,language=lisp]
+(setq *R-ops* '((0 1) (1 0) (1 1) (2 0) (0 2))) 
+(setq *L-ops* '((0 -1) (-1 0) (-1 -1) (-2 0) (0 -2)))
+            \end{lstlisting} 
+            \section{Vérifier les états}
+            Voici la fonction qui vérifie si un états est correct ou non.  
+             \begin{lstlisting}[label=some-code,caption=verify (state) ,language=lisp]
+(defun verify (state)
+  (cond
+    ((or (< (car state) 0) (< (cadr state) 0)) nil)
+    ((or (> (car state) 3) (> (cadr state) 3)) nil)
+    (
+      (and 
+        (and (not (= (car state) 3)) (not (= (car state) 0)))
+        (not (= (car state) (cadr state)))
+      )
+      nil
+    )
+    (T T)
+  )	
+)
+            \end{lstlisting} 
+            \newpage
+            Ces conditions ont été déduites du tableau suivant 
+            \begin{center}
+            \begin{tabular}{|c|c|c|}
+            \hline
+            Nombre de Missionnaire & Nombre de Cannibale & État\\ \hline
+            0&0&OK\\ \hline 1&0&Incorrect\\ \hline 2&0&Incorrect\\ \hline 3&0&OK\\ \hline
+            0&1&OK\\ \hline 1&1&OK\\ \hline 2&1&Incorrect\\ \hline 3&1&OK\\ \hline
+            0&2&OK\\ \hline 1&2&Incorrect\\ \hline 2&2&OK\\ \hline 3&2&OK\\ \hline
+            0&3&OK\\ \hline 1&3&Incorrect\\ \hline 2&3&Incorrect\\ \hline 3&3&OK\\
+            \hline
+            \end{tabular}
+               \end{center}
+               
+            \section{La fonction d'inclusion}
+            Cette fonction permet de savoir si un état appartient à l'ensemble des états déjà visités.
+             \begin{lstlisting}[label=some-code,caption=in (x L) version récursive ,language=lisp]
+(defun in (x L)
+  (if (or (eq x nil) (eq L nil)) NIL (if (equal (car L) x) T (in x (cdr L))))
+)
+            \end{lstlisting} 
+            \section{Applications des opérations à l'état courant}
+            Cette fonction va permettre d'avoir le résultat de l'application des opérations choisies sur l'état courant.
+            \begin{lstlisting}[label=some-code,caption=apply-op (state op) ,language=lisp]
+(defun apply-op (state op)
+  (list 
+    (+ (car state) (car op)) 
+    (+ (cadr state) (cadr op)) 
+    (if (eq (caddr state) 1) 0 1))
+)
+            \end{lstlisting}
+            
+            \newpage
+            
+            \section{Parcours en largeur d'abord} 
+            \subsection{Fonctions pour enfiler et défiler}
+            Les deux fonctions suivantes vont servirent à enfiler et à défiler des éléments dans une file FIFO afin de pouvoir par la suite implémenter la fonction de parcours en largeur d'abord. Cependant, on aurait, après réflexion, utiliser utiliser les fonctions de bases de lisp pour arriver à nos fins.
+            \subsubsection{Enfiler}
+            \begin{lstlisting}[label=some-code,caption=enqueue (x Q) ,language=lisp]
+(defun enqueue (x Q)
+  (if (null Q)
+    (list x)
+	(nconc Q (list x))
+  )
+)
+            \end{lstlisting}
+            \subsubsection{Défiler}
+            \begin{lstlisting}[label=some-code,caption=dequeue (Q) ,language=lisp]
+(defun dequeue (Q)
+  (cdr Q)
+)
+            \end{lstlisting}
+            
+            \subsection{Fonction de parcours}
+            \subsubsection{Algorithme}
+            \begin{algorithm}
+            \caption{Algorithme de parcours en largeur d'abord}
+            \begin{algorithmic}
+            \If {$car(x) = (0\ 0\ 0)$}
+                \State retourner $T$
+            \ElsIf {$L[1] \in M$}
+                     \State retourner $(L[1] F4(L / L[1]))$
+            \Else                   
+                    \State retourner $F4(L \ L[1])$
+            \EndIf   
+   
+            \end{algorithmic}
+            \end{algorithm}  
+            \subsubsection{Implémentation en lisp}
+            \begin{lstlisting}[label=some-code,caption=BFS-solve (N L) version largeur d'abord,language=lisp]
+(defun BFS-solve (Q)
+  (dolist (node Q)
+    (setq Q (dequeue Q))
+      (cond 
+	    ((equal (car node) '(0 0 0)) 
+	      (print "One of the solution is ") 
+	      (print (append (cadr node) (list '(0 0 0)))))  
+	    ((verify (car node)) 
+	      (let ((res '()))
+	      (dolist 
+	        (op (if (eq (caddr (car node)) 0) *R-ops* *L-ops*))
+	        (setq res (apply-op (car node) op))
+	        (if (and (not (in res (cadr node))) (verify res))
+              (if (eq (cadr node) NIL)	
+	            (setq Q (enqueue (list res (list (car node))) Q))
+	            (setq Q 
+	              (enqueue (list res 
+	              (append (cadr node) 
+	              (list (car node)))) 
+	              Q
+	            )
+	          )
+	        )
+	      )	
+	    )
+	  )
+	)
+  )
+)
+(if (null Q) "END" (solve-larg Q))	
+)
             \end{lstlisting}
           
             \begin{lstlisting}[label=some-code,caption=F2 (N L) version itérative,language=lisp]
-                (defun F2Iter (N L)
-	              (if (< N (length L))
-		            (let ((out NIL))
-			          (dotimes 
-				        (x (+ N 1)
-					    out)
-					    (cons out (nth x L))
-			          )
-		            )
-		         (print "The number you chose is not correct")
-	             )
+               (defun F2Iter (N L)
+	             (if (< N (length L))
+		           (let ((out NIL))
+			         (dotimes 
+			           (x (+ N 1)
+			        out)
+		       (cons out (nth x L))
+			   )
+		       )
+		       (print "The number you chose is not correct")
+	           )
                )
             \end{lstlisting}        
 F2rec et F2iter retourne la tête de la liste L formée par les N premiers éléments de la liste L.

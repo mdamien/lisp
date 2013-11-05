@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  4 NOV 2013 18:51
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  5 NOV 2013 01:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -472,6 +472,24 @@ LaTeX Warning: Label `some-code' multiply defined.
 
 LaTeX Warning: Label `some-code' multiply defined.
 
+
+LaTeX Warning: Label `some-code' multiply defined.
+
+
+LaTeX Warning: Label `some-code' multiply defined.
+
+
+LaTeX Warning: Label `some-code' multiply defined.
+
+
+LaTeX Warning: Label `some-code' multiply defined.
+
+
+LaTeX Warning: Label `some-code' multiply defined.
+
+
+LaTeX Warning: Label `some-code' multiply defined.
+
 )
 \openout1 = `IA01_TP1.aux'.
 
@@ -630,172 +648,224 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 
 ] [2]
 Chapitre 1.
+[3
+
+]
+Chapitre 2.
+[4
+
+]
+Chapitre 3.
+[5
+
+]
+Chapitre 4.
+[6
+
+]
+Chapitre 5.
 (/usr/local/texlive/2012/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2004/09/05 1.3 listings language file
 )
 (/usr/local/texlive/2012/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2004/09/05 1.3 listings language file
 )
-Overfull \hbox (6.0pt too wide) in paragraph at lines 84--84
+Overfull \hbox (6.0pt too wide) in paragraph at lines 108--108
 [][][][][][][] 
  []
 
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 92--92
-[][][][][][][] 
- []
-
-[3
-
-]
-Overfull \hbox (9.68692pt too wide) in paragraph at lines 102--103
-[][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 111--111
-[][][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 119--119
-[][][][][][][] 
- []
-
-[4]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 144--144
-[][][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 155--155
-[][][][][][][] 
- []
-
-(/usr/local/texlive/2012/texmf-dist/tex/latex/ucs/data/uni-32.def
-File: uni-32.def 2012/04/20 UCS: Unicode data U+2000..U+20FF
-) [5]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 191--191
-[][][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 216--216
-[][][][][][][] 
- []
-
-[6]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 244--244
-[][][][][][][] 
- []
-
-
-Overfull \hbox (94.267pt too wide) in paragraph at lines 249--250
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[7]
-Chapitre 2.
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 259--259
-[][][][][][][] 
- []
-
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 261.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 109.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 261.
- [8
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 109.
 
-]
-Chapitre 3.
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 281--281
+Overfull \hbox (6.0pt too wide) in paragraph at lines 114--114
 [][][][][][][] 
  []
 
-[9
+[7
 
 ]
-Chapitre 4.
+Overfull \hbox (6.0pt too wide) in paragraph at lines 146--146
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (59.0253pt too wide) in paragraph at lines 148--149
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 153--153
+[][][][][][][] 
+ []
+
+[8]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 168--168
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 177--177
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 199--199
+[][][][][][][] 
+ []
+
+[9]
+Overfull \hbox (2.63858pt too wide) in paragraph at lines 214--215
+[][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 233--233
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 252--252
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 260--260
+[][][][][][][] 
+ []
+
+[10] [11]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 285--285
+[][][][][][][] 
+ []
+
 
 Overfull \hbox (6.0pt too wide) in paragraph at lines 296--296
 [][][][][][][] 
  []
 
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 301--301
+(/usr/local/texlive/2012/texmf-dist/tex/latex/ucs/data/uni-32.def
+File: uni-32.def 2012/04/20 UCS: Unicode data U+2000..U+20FF
+) [12]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 332--332
 [][][][][][][] 
  []
 
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 306--306
+Overfull \hbox (6.0pt too wide) in paragraph at lines 357--357
+[][][][][][][] 
+ []
+
+[13]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 385--385
 [][][][][][][] 
  []
 
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 311--311
+Overfull \hbox (94.267pt too wide) in paragraph at lines 390--391
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[14]
+Chapitre 6.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 400--400
 [][][][][][][] 
  []
 
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 316--316
-[][][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 321--321
-[][][][][][][] 
- []
-
-[10
+[15
 
 ]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 329--329
+Chapitre 7.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 422--422
+[][][][][][][] 
+ []
+
+[16
+
+]
+Chapitre 8.
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 437--437
 [][][][][][][] 
  []
 
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 352--352
-[][][][][][][] 
- []
-
-[11]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 378--378
+Overfull \hbox (6.0pt too wide) in paragraph at lines 442--442
 [][][][][][][] 
  []
 
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 404--404
-[][][][][][][] 
- []
-
-[12]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 431--431
+Overfull \hbox (6.0pt too wide) in paragraph at lines 447--447
 [][][][][][][] 
  []
 
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 445--445
+Overfull \hbox (6.0pt too wide) in paragraph at lines 452--452
 [][][][][][][] 
  []
 
-[13] (/Users/Antoine/Documents/ProjetInfo/Github/lisp/.texpadtmp/IA01_TP1.aux)
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 457--457
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 462--462
+[][][][][][][] 
+ []
+
+[17
+
+]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 470--470
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 493--493
+[][][][][][][] 
+ []
+
+[18]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 519--519
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 545--545
+[][][][][][][] 
+ []
+
+[19]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 572--572
+[][][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 586--586
+[][][][][][][] 
+ []
+
+[20] (/Users/Antoine/Documents/ProjetInfo/Github/lisp/.texpadtmp/IA01_TP1.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 10502 strings out of 493488
- 147788 string characters out of 3141326
- 245176 words of memory out of 3000000
- 13617 multiletter control sequences out of 15000+200000
+ 10516 strings out of 493488
+ 147931 string characters out of 3141326
+ 251695 words of memory out of 3000000
+ 13631 multiletter control sequences out of 15000+200000
  21041 words of font info for 57 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 38i,7n,43p,868b,1613s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,7n,43p,868b,1611s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 </usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
@@ -812,10 +882,10 @@ e/2012/texmf-dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/local/texlive/
 12/texmf-dist/fonts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/2012
 /texmf-dist/fonts/type1/public/cm-super/sfxc2074.pfb>
 Output written on /Users/Antoine/Documents/ProjetInfo/Github/lisp/.texpadtmp/IA
-01_TP1.pdf (14 pages, 192565 bytes).
+01_TP1.pdf (21 pages, 209155 bytes).
 PDF statistics:
- 107 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
+ 129 PDF objects out of 1000 (max. 8388607)
+ 91 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
